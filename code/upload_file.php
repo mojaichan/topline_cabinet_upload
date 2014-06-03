@@ -22,7 +22,7 @@ if (($_FILES["file"]["size"] < 2000000) && in_array($extension, $allowedExts))
 		$store_filedir = "upload/" . $_FILES["file"]["name"];
 		$uploaded = true;
 		echo "Stored in: " . ".upload/" . $_FILES["file"]["name"];
-	}
+	} /*** /
 }
 else
 {
@@ -37,6 +37,7 @@ if ($uploaded){
 	$firstLine = fgetcsv($file);
 	//print_r($firstLine);
 	$columns = array();
+	//
 	$matchingColumn = 0;
 	if (array_search("Item Number", $firstLine) !== false){
 		$columns["itemno"] = array_search("Item Number", $firstLine);

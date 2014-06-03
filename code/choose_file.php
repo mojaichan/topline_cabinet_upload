@@ -7,6 +7,7 @@ include_once 'templates/head_tag.php';
 <form action="upload_file.php" role="form" enctype="multipart/form-data" method="post" style="width:50%;position:relative;margin-top:100px;left:25%;">
 <fieldset>
 	<legend>
+		<?php ?>
 		Top-Line Furniture - File Cabinet Upload
 	</legend>
 	<div class="form-group">
