@@ -1,6 +1,7 @@
 <?php
 
 /*** File Upload ***/
+ini_set('max_execution_time', 1800);
 $allowedExts = array("gif", "jpeg", "jpg", "png", "csv", "js");
 //$allowedExts = array("csv");
 $temp = explode(".", $_FILES["file"]["name"]);
@@ -22,18 +23,20 @@ if (($_FILES["file"]["size"] < 2000000) && in_array($extension, $allowedExts))
 		$store_filedir = "upload/" . $_FILES["file"]["name"];
 		$uploaded = true;
 		echo "Stored in: " . ".upload/" . $_FILES["file"]["name"];
-	} /*** /
+	} 
 }
+
 else
 {
 	echo "Invalid file";
+	exit;
 }
 /*** End of File Upload ***/  
 
 /*** File Read & CSV parsing ***/
 if ($uploaded){
 	$file = fopen($store_filedir,"r");
-	/** column header handling **/
+	// column header handling
 	$firstLine = fgetcsv($file);
 	//print_r($firstLine);
 	$columns = array();
@@ -91,21 +94,26 @@ foreach ($items as $item){
 	$nsFile->urlComponent = $item[$columns["fileurl"]];
 	array_push($addFileArray,$nsFile);
 }
+
+	//echo "<pre>";var_dump(sizeof($addFileArray));var_dump(sizeof($items));echo "</pre>";
 /*** end of builing File() objects ***/
 
 /*** Web Service to Netsuite ***/
+echo "<p>File Update Results</p>";
 $service = new NetSuiteService();
 $request = new AddRequest();
-
-echo "<p>File Update Results</p>";
+$i = 0;
 foreach ($addFileArray as $addFileRecord){
 	$request->record = $addFileRecord;
 	$addResponse = $service->add($request);
 	if ($addResponse->writeResponse->status->isSuccess == true){
-		echo "File ".$addFileRecord->name," is added to Netsuite successfully.<br/>";
+		echo "No: ".$i." File ".$addFileRecord->name," is added to Netsuite successfully.<br/>";
 	} else {
 		echo "File ".$addFileRecord->name," is not added due to error.<br/>";
 	}
+	ob_flush();
+        flush();
+		$i++;
 }
 /*** End of Web Service to Netsuite ***/
 ?>
